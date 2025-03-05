@@ -10,14 +10,10 @@ if ($_SESSION['user_role'] != 'admin') {
     redirect(BASE_URL . '/dashboard.php');
 }
 
-// 获取当前系统设置
-$sql = "SELECT * FROM settings";
-$result = query($sql);
-$settings = [];
-
-while ($row = $result->fetch_assoc()) {
-    $settings[$row['setting_key']] = $row['setting_value'];
-}
+// 获取当前系统设置 - 使用PDO
+$stmt = $pdo->query("SELECT * FROM settings");
+$settings_data = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+$settings = $settings_data;
 
 // 处理表单提交
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,21 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($_POST as $key => $value) {
         if (strpos($key, 'setting_') === 0) {
             $settingKey = substr($key, 8); // 移除 'setting_' 前缀
-            $settingValue = escapeString($value);
             
             // 检查设置是否存在
-            $sql = "SELECT id FROM settings WHERE setting_key = '$settingKey'";
-            $result = query($sql);
+            $checkStmt = $pdo->prepare("SELECT id FROM settings WHERE setting_key = ?");
+            $checkStmt->execute([$settingKey]);
             
-            if ($result->num_rows > 0) {
+            if ($checkStmt->rowCount() > 0) {
                 // 更新现有设置
-                $sql = "UPDATE settings SET setting_value = '$settingValue' WHERE setting_key = '$settingKey'";
+                $updateStmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
+                $updateStmt->execute([$value, $settingKey]);
             } else {
                 // 插入新设置
-                $sql = "INSERT INTO settings (setting_key, setting_value) VALUES ('$settingKey', '$settingValue')";
+                $insertStmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
+                $insertStmt->execute([$settingKey, $value]);
             }
-            
-            execute($sql);
         }
     }
     
