@@ -818,3 +818,38 @@ th.sortable.desc::after {
     content: '↓';
     color: var(--primary-color);
 }
+
+/* 子菜单样式 */
+.main-nav .menu-item {
+    position: relative;
+}
+
+.main-nav .submenu {
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.main-nav .menu-item.active .submenu,
+.main-nav .menu-item:hover .submenu {
+    display: block;
+}
+
+.main-nav .submenu li {
+    margin: 5px 0;
+}
+
+.main-nav .submenu a {
+    color: #f0f0f0;
+    font-size: 0.9em;
+    text-decoration: none;
+    display: block;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+
+.main-nav .submenu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
