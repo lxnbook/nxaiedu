@@ -557,3 +557,264 @@ ul {
     padding: 16px;
   }
 }
+
+/* 添加到现有styles.css文件末尾的补充样式 */
+
+/* 帮助页面样式 */
+.help-container {
+    display: flex;
+    gap: 20px;
+}
+
+.help-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.help-search {
+    margin-bottom: 20px;
+}
+
+.help-search input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.help-nav {
+    list-style: none;
+}
+
+.help-nav li {
+    margin-bottom: 5px;
+}
+
+.help-nav a {
+    display: block;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    transition: all 0.3s;
+}
+
+.help-nav li.active a,
+.help-nav a:hover {
+    background-color: rgba(0, 0, 0, 0.025);
+}
+
+.help-content {
+    flex: 1;
+}
+
+.help-section {
+    display: none;
+}
+
+.help-section.active {
+    display: block;
+}
+
+.help-section h2 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.help-section h3 {
+    margin: 20px 0 10px;
+}
+
+/* 标签页样式 */
+.tabs-container {
+    margin-bottom: 20px;
+}
+
+.tab-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* 提示词库样式 */
+.prompt-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+
+.prompt-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.prompt-title {
+    font-weight: 500;
+    font-size: 16px;
+    margin: 0;
+}
+
+.prompt-category {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background-color: #e6f7ff;
+    color: var(--primary-color);
+    font-size: 12px;
+}
+
+.prompt-content {
+    margin-bottom: 10px;
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+}
+
+.prompt-content.expanded {
+    max-height: none;
+}
+
+.prompt-content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background: linear-gradient(transparent, white);
+    pointer-events: none;
+}
+
+.prompt-content.expanded::after {
+    display: none;
+}
+
+.prompt-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* 统计分析页面样式 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.chart-container {
+    height: 300px;
+    margin-bottom: 20px;
+}
+
+/* 文件上传预览 */
+.file-preview {
+    margin-top: 10px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 8px;
+    background-color: #f9f9f9;
+}
+
+.file-name {
+    font-weight: 500;
+}
+
+.file-size {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* 搜索高亮 */
+mark {
+    background-color: #fffbe6;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* 表格排序 */
+th.sortable {
+    cursor: pointer;
+    position: relative;
+}
+
+th.sortable::after {
+    content: '↕';
+    position: absolute;
+    right: 8px;
+    color: var(--text-secondary);
+}
+
+th.sortable.asc::after {
+    content: '↑';
+    color: var(--primary-color);
+}
+
+th.sortable.desc::after {
+    content: '↓';
+    color: var(--primary-color);
+}
