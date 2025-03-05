@@ -139,6 +139,29 @@ if ($conn->query($sql) === TRUE) {
     echo "创建通知表错误: " . $conn->error . "<br>";
 }
 
+// 创建AI API设置表
+$sql = "CREATE TABLE IF NOT EXISTS ai_api_settings (
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    provider VARCHAR(50) NOT NULL,
+    api_type ENUM('text', 'image', 'embedding', 'other') NOT NULL DEFAULT 'text',
+    api_key VARCHAR(255) NOT NULL,
+    api_url VARCHAR(255) NOT NULL,
+    model_name VARCHAR(100) NOT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 0,
+    max_tokens INT(11) DEFAULT 2000,
+    temperature FLOAT DEFAULT 0.7,
+    additional_params TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY provider_type (provider, api_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+
+if ($conn->query($sql) === TRUE) {
+    echo "AI API设置表创建成功<br>";
+} else {
+    echo "创建AI API设置表错误: " . $conn->error . "<br>";
+}
+
 // 插入默认管理员账户
 $admin_password = password_hash('admin123', PASSWORD_DEFAULT);
 $sql = "INSERT INTO users (name, email, password, role, department, status) 
