@@ -1,68 +1,49 @@
-// 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
-    // 初始化下拉菜单
-    initDropdowns();
+    // 侧边栏折叠/展开
+    const menuItems = document.querySelectorAll('.menu-item.has-submenu');
     
-    // 初始化侧边栏折叠
-    initSidebar();
-    
-    // 初始化警告消息自动关闭
-    initAlerts();
-    
-    // 初始化仪表盘图表
-    initDashboardCharts();
-});
-
-// 初始化下拉菜单
-function initDropdowns() {
-    const dropdowns = document.querySelectorAll('.user-dropdown');
-    
-    dropdowns.forEach(dropdown => {
-        const toggle = dropdown.querySelector('.user-dropdown-toggle');
+    menuItems.forEach(item => {
+        const link = item.querySelector('.menu-link');
         
-        toggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdown.classList.toggle('active');
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            item.classList.toggle('open');
         });
     });
     
-    // 点击页面其他地方关闭下拉菜单
-    document.addEventListener('click', function() {
-        dropdowns.forEach(dropdown => {
-            dropdown.classList.remove('active');
-        });
-    });
-}
-
-// 初始化侧边栏折叠
-function initSidebar() {
-    const sidebarToggle = document.getElementById('sidebarToggle');
+    // 移动端侧边栏切换
+    const menuToggle = document.querySelector('.menu-toggle');
     const sidebar = document.querySelector('.sidebar');
-    const mainContent = document.querySelector('.main-content');
     
-    if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('expanded');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
         });
     }
-}
-
-// 初始化警告消息自动关闭
-function initAlerts() {
+    
+    // 用户下拉菜单
+    const userDropdown = document.querySelector('.user-dropdown');
+    
+    if (userDropdown) {
+        const userInfo = userDropdown.querySelector('.user-info');
+        
+        userInfo.addEventListener('click', function(e) {
+            e.preventDefault();
+            userDropdown.classList.toggle('open');
+        });
+        
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            if (!userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('open');
+            }
+        });
+    }
+    
+    // 提示框自动关闭
     const alerts = document.querySelectorAll('.alert');
     
     alerts.forEach(alert => {
-        // 添加关闭按钮
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'alert-close';
-        closeBtn.innerHTML = '&times;';
-        closeBtn.addEventListener('click', function() {
-            alert.remove();
-        });
-        alert.appendChild(closeBtn);
-        
-        // 5秒后自动关闭
         setTimeout(() => {
             alert.style.opacity = '0';
             setTimeout(() => {
@@ -70,128 +51,122 @@ function initAlerts() {
             }, 300);
         }, 5000);
     });
-}
-
-// 格式化文件大小
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-// 初始化仪表盘图表
-function initDashboardCharts() {
-    // 仪表盘汇报趋势图表
-    if (document.getElementById('reportsChart')) {
-        const ctx = document.getElementById('reportsChart').getContext('2d');
-        
-        // 获取图表数据
-        const labels = JSON.parse(document.getElementById('chartLabels').textContent);
-        const data = JSON.parse(document.getElementById('chartData').textContent);
-        
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '汇报数量',
-                    data: data,
-                    backgroundColor: 'rgba(24, 144, 255, 0.2)',
-                    borderColor: 'rgba(24, 144, 255, 1)',
-                    borderWidth: 2,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0
-                        }
-                    }
+    
+    // 文件上传预览
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const fileList = this.files;
+            const previewContainer = this.parentElement.querySelector('.file-preview');
+            
+            if (previewContainer) {
+                previewContainer.innerHTML = '';
+                
+                for (let i = 0; i < fileList.length; i++) {
+                    const file = fileList[i];
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    // 显示文件名和大小
+                    fileItem.innerHTML = `
+                        <span class="file-name">${file.name}</span>
+                        <span class="file-size">${formatFileSize(file.size)}</span>
+                    `;
+                    
+                    previewContainer.appendChild(fileItem);
                 }
             }
         });
+    });
+    
+    // 格式化文件大小
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
     
-    // 部门汇报统计图表
-    if (document.getElementById('departmentChart')) {
-        const ctx = document.getElementById('departmentChart').getContext('2d');
-        
-        // 获取图表数据
-        const labels = JSON.parse(document.getElementById('deptLabels').textContent);
-        const data = JSON.parse(document.getElementById('deptData').textContent);
-        
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '汇报数量',
-                    data: data,
-                    backgroundColor: 'rgba(24, 144, 255, 0.6)',
-                    borderColor: 'rgba(24, 144, 255, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0
-                        }
-                    }
-                }
-            }
-        });
-    }
+    // 表格排序
+    const sortableHeaders = document.querySelectorAll('th.sortable');
     
-    // 汇报状态分布图表
-    if (document.getElementById('statusChart')) {
-        const ctx = document.getElementById('statusChart').getContext('2d');
-        
-        // 获取图表数据
-        const labels = JSON.parse(document.getElementById('statusLabels').textContent);
-        const data = JSON.parse(document.getElementById('statusData').textContent);
-        
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: [
-                        'rgba(82, 196, 26, 0.6)',  // 已批准
-                        'rgba(24, 144, 255, 0.6)', // 已提交
-                        'rgba(250, 173, 20, 0.6)', // 草稿
-                        'rgba(245, 34, 45, 0.6)'   // 已退回
-                    ],
-                    borderColor: [
-                        'rgba(82, 196, 26, 1)',
-                        'rgba(24, 144, 255, 1)',
-                        'rgba(250, 173, 20, 1)',
-                        'rgba(245, 34, 45, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
+    sortableHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const table = this.closest('table');
+            const index = Array.from(this.parentElement.children).indexOf(this);
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            const isAsc = this.classList.contains('asc');
+            
+            // 移除所有排序类
+            sortableHeaders.forEach(h => {
+                h.classList.remove('asc', 'desc');
+            });
+            
+            // 添加新的排序类
+            this.classList.add(isAsc ? 'desc' : 'asc');
+            
+            // 排序行
+            rows.sort((a, b) => {
+                const aValue = a.children[index].textContent.trim();
+                const bValue = b.children[index].textContent.trim();
+                
+                // 尝试数字排序
+                const aNum = parseFloat(aValue);
+                const bNum = parseFloat(bValue);
+                
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return isAsc ? bNum - aNum : aNum - bNum;
                 }
+                
+                // 字符串排序
+                return isAsc ? 
+                    bValue.localeCompare(aValue, 'zh-CN') : 
+                    aValue.localeCompare(bValue, 'zh-CN');
+            });
+            
+            // 重新添加排序后的行
+            const tbody = table.querySelector('tbody');
+            rows.forEach(row => tbody.appendChild(row));
+        });
+    });
+    
+    // 确认对话框
+    const confirmLinks = document.querySelectorAll('a[data-confirm]');
+    
+    confirmLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const message = this.getAttribute('data-confirm');
+            
+            if (!confirm(message)) {
+                e.preventDefault();
             }
         });
-    }
-}
+    });
+    
+    // 标签页切换
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tabContainer = this.closest('.tabs-container');
+            const tabId = this.getAttribute('data-tab');
+            
+            // 移除所有活动状态
+            tabContainer.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            tabContainer.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            // 添加当前活动状态
+            this.classList.add('active');
+            tabContainer.querySelector(`#${tabId}`).classList.add('active');
+        });
+    });
+});
