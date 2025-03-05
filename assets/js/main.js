@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化警告消息自动关闭
     initAlerts();
+    
+    // 初始化仪表盘图表
+    initDashboardCharts();
 });
 
 // 初始化下拉菜单
@@ -76,4 +79,119 @@ function formatFileSize(bytes) {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// 初始化仪表盘图表
+function initDashboardCharts() {
+    // 仪表盘汇报趋势图表
+    if (document.getElementById('reportsChart')) {
+        const ctx = document.getElementById('reportsChart').getContext('2d');
+        
+        // 获取图表数据
+        const labels = JSON.parse(document.getElementById('chartLabels').textContent);
+        const data = JSON.parse(document.getElementById('chartData').textContent);
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '汇报数量',
+                    data: data,
+                    backgroundColor: 'rgba(24, 144, 255, 0.2)',
+                    borderColor: 'rgba(24, 144, 255, 1)',
+                    borderWidth: 2,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 部门汇报统计图表
+    if (document.getElementById('departmentChart')) {
+        const ctx = document.getElementById('departmentChart').getContext('2d');
+        
+        // 获取图表数据
+        const labels = JSON.parse(document.getElementById('deptLabels').textContent);
+        const data = JSON.parse(document.getElementById('deptData').textContent);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '汇报数量',
+                    data: data,
+                    backgroundColor: 'rgba(24, 144, 255, 0.6)',
+                    borderColor: 'rgba(24, 144, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 汇报状态分布图表
+    if (document.getElementById('statusChart')) {
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        
+        // 获取图表数据
+        const labels = JSON.parse(document.getElementById('statusLabels').textContent);
+        const data = JSON.parse(document.getElementById('statusData').textContent);
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgba(82, 196, 26, 0.6)',  // 已批准
+                        'rgba(24, 144, 255, 0.6)', // 已提交
+                        'rgba(250, 173, 20, 0.6)', // 草稿
+                        'rgba(245, 34, 45, 0.6)'   // 已退回
+                    ],
+                    borderColor: [
+                        'rgba(82, 196, 26, 1)',
+                        'rgba(24, 144, 255, 1)',
+                        'rgba(250, 173, 20, 1)',
+                        'rgba(245, 34, 45, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
 }
