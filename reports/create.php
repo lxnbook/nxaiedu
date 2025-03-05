@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = escapeString($_POST['type']);
     $content = escapeString($_POST['content']);
     $userId = $_SESSION['user_id'];
-    $status = isset($_POST['submit_type']) && $_POST['submit_type'] === 'submit' ? 'submitted' : 'draft';
-    $submittedAt = $status === 'submitted' ? 'NOW()' : 'NULL';
+    $status = isset($_POST['submit']) ? 'submitted' : 'draft';
+    $submittedAt = $status == 'submitted' ? 'NOW()' : 'NULL';
     
     // 插入汇报记录
     $sql = "INSERT INTO reports (user_id, title, type, content, status, submitted_at, created_at, updated_at) 
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // 设置成功消息并重定向
-    if ($status === 'submitted') {
+    if ($status == 'submitted') {
         setFlashMessage('success', '汇报已成功提交！');
     } else {
         setFlashMessage('success', '汇报已保存为草稿！');
@@ -63,10 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // 获取汇报类型列表
 $reportTypes = getReportTypes();
-
-// 获取提示词列表
-$sql = "SELECT * FROM prompts WHERE is_public = 1 OR created_by = {$_SESSION['user_id']} ORDER BY title";
-$prompts = query($sql);
 
 $pageTitle = '新建汇报';
 ?>
@@ -113,9 +109,6 @@ $pageTitle = '新建汇报';
                             
                             <div class="form-group">
                                 <label for="content">内容</label>
-                                <div class="editor-toolbar">
-                                    <button type="button" class="btn-secondary btn-sm" id="insertPrompt">插入提示词</button>
-                                </div>
                                 <textarea id="content" name="content" rows="15" required></textarea>
                             </div>
                             
@@ -125,9 +118,26 @@ $pageTitle = '新建汇报';
                                 <small class="form-text">支持多个文件，单个文件大小不超过10MB</small>
                             </div>
                             
+                            <div class="form-group">
+                                <label>提示词库</label>
+                                <div class="prompt-selector">
+                                    <select id="promptSelect">
+                                        <option value="">选择提示词模板</option>
+                                        <?php
+                                        $sql = "SELECT id, title, category FROM prompts WHERE is_public = 1 OR created_by = {$_SESSION['user_id']} ORDER BY category, title";
+                                        $prompts = query($sql);
+                                        while ($prompt = $prompts->fetch_assoc()) {
+                                            echo "<option value=\"{$prompt['id']}\">{$prompt['title']} ({$prompt['category']})</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                    <button type="button" id="insertPrompt" class="btn-secondary">插入模板</button>
+                                </div>
+                            </div>
+                            
                             <div class="form-actions">
-                                <button type="submit" name="submit_type" value="draft" class="btn-secondary">保存草稿</button>
-                                <button type="submit" name="submit_type" value="submit" class="btn-primary">提交汇报</button>
+                                <button type="submit" name="draft" class="btn-secondary">保存草稿</button>
+                                <button type="submit" name="submit" class="btn-primary">提交汇报</button>
                             </div>
                         </form>
                     </div>
@@ -135,114 +145,29 @@ $pageTitle = '新建汇报';
             </div>
         </main>
     </div>
-    
-    <!-- 提示词选择弹窗 -->
-    <div id="promptModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>选择提示词</h3>
-                <button type="button" class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group search-group">
-                    <input type="text" id="promptSearch" placeholder="搜索提示词">
-                </div>
-                <div class="prompt-list">
-                    <?php if ($prompts->num_rows > 0): ?>
-                        <?php while ($prompt = $prompts->fetch_assoc()): ?>
-                            <div class="prompt-item" data-id="<?php echo $prompt['id']; ?>">
-                                <h4><?php echo $prompt['title']; ?></h4>
-                                <p><?php echo substr(strip_tags($prompt['content']), 0, 100) . '...'; ?></p>
-                                <div class="prompt-meta">
-                                    <span class="prompt-category"><?php echo $prompt['category']; ?></span>
-                                    <?php if (!empty($prompt['subject'])): ?>
-                                        <span class="prompt-subject"><?php echo $prompt['subject']; ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <p class="no-data">暂无提示词</p>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary modal-close">取消</button>
-                <button type="button" class="btn-primary" id="insertSelectedPrompt">插入</button>
-            </div>
-        </div>
-    </div>
 
     <script src="<?php echo BASE_URL; ?>/assets/js/main.js"></script>
     <script>
-        // 插入提示词功能
         document.addEventListener('DOMContentLoaded', function() {
+            // 插入提示词模板
+            const promptSelect = document.getElementById('promptSelect');
             const insertPromptBtn = document.getElementById('insertPrompt');
-            const promptModal = document.getElementById('promptModal');
-            const modalClose = document.querySelectorAll('.modal-close');
-            const insertSelectedPromptBtn = document.getElementById('insertSelectedPrompt');
-            const promptItems = document.querySelectorAll('.prompt-item');
             const contentTextarea = document.getElementById('content');
-            const promptSearch = document.getElementById('promptSearch');
             
-            // 打开提示词弹窗
-            insertPromptBtn.addEventListener('click', function() {
-                promptModal.style.display = 'block';
-            });
-            
-            // 关闭提示词弹窗
-            modalClose.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    promptModal.style.display = 'none';
-                });
-            });
-            
-            // 点击窗口外部关闭弹窗
-            window.addEventListener('click', function(event) {
-                if (event.target === promptModal) {
-                    promptModal.style.display = 'none';
-                }
-            });
-            
-            // 选择提示词
-            let selectedPromptId = null;
-            promptItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    promptItems.forEach(i => i.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selectedPromptId = this.dataset.id;
-                });
-            });
-            
-            // 插入选中的提示词
-            insertSelectedPromptBtn.addEventListener('click', function() {
-                if (selectedPromptId) {
-                    // 通过AJAX获取提示词内容
-                    fetch(`<?php echo BASE_URL; ?>/prompts/get_prompt.php?id=${selectedPromptId}`)
+            insertPromptBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const promptId = promptSelect.value;
+                
+                if (promptId) {
+                    fetch(`<?php echo BASE_URL; ?>/prompts/get_prompt.php?id=${promptId}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                // 插入提示词内容到编辑器
-                                contentTextarea.value += data.content;
-                                promptModal.style.display = 'none';
+                                contentTextarea.value = data.content;
                             }
                         })
                         .catch(error => console.error('Error:', error));
                 }
-            });
-            
-            // 搜索提示词
-            promptSearch.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                promptItems.forEach(item => {
-                    const title = item.querySelector('h4').textContent.toLowerCase();
-                    const content = item.querySelector('p').textContent.toLowerCase();
-                    if (title.includes(searchTerm) || content.includes(searchTerm)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
             });
         });
     </script>
