@@ -1,0 +1,215 @@
+/* 全局样式 */
+:root {
+  --primary-color: #1890ff;
+  --secondary-color: #52c41a;
+  --warning-color: #faad14;
+  --danger-color: #f5222d;
+  --success-color: #52c41a;
+  --text-color: #333333;
+  --text-secondary: #666666;
+  --border-color: #e8e8e8;
+  --bg-color: #f5f5f5;
+  --card-bg: #ffffff;
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --border-radius: 4px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul {
+  list-style: none;
+}
+
+/* 登录页面 */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.login-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 30px;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.logo h1 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.login-form {
+  margin-top: 20px;
+}
+
+.forgot-password {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* 警告消息 */
+.alert {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: var(--border-radius);
+  position: relative;
+}
+
+.alert-success {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #52c41a;
+}
+
+.alert-danger {
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+  color: #f5222d;
+}
+
+.alert-warning {
+  background-color: #fffbe6;
+  border: 1px solid #ffe58f;
+  color: #faad14;
+}
+
+.alert-info {
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  color: #1890ff;
+}
+
+/* 按钮样式 */
+.btn-primary, .btn-secondary, .btn-danger, .btn-success {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: #fff;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: #fff;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #40a9ff;
+}
+
+.btn-secondary:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-danger:hover {
+  background-color: #ff4d4f;
+}
+
+.btn-success:hover {
+  background-color: #73d13d;
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
