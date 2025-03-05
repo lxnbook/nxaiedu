@@ -60,11 +60,16 @@
                     <span>用户管理</span>
                 </a>
             </li>
-            <li class="<?php echo strpos($_SERVER['PHP_SELF'], '/settings/') !== false ? 'active' : ''; ?>">
-                <a href="<?php echo BASE_URL; ?>/settings/index.php">
-                    <i class="icon-settings"></i> 
+            <li class="menu-item <?php echo strpos($_SERVER['PHP_SELF'], '/settings/') !== false ? 'active' : ''; ?>">
+                <a href="<?php echo BASE_URL; ?>/settings/index.php" class="menu-link">
+                    <i class="icon-settings"></i>
                     <span>系统设置</span>
                 </a>
+                <ul class="submenu">
+                    <li><a href="<?php echo BASE_URL; ?>/settings/general.php">基本设置</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/settings/ai_settings.php">AI模型设置</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/settings/email.php">邮件设置</a></li>
+                </ul>
             </li>
             <?php endif; ?>
         </ul>
