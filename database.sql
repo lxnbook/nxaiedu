@@ -96,3 +96,21 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 INSERT INTO `prompts` (`title`, `content`, `category`, `subject`, `created_by`, `is_public`) VALUES
 ('月度教研工作汇报模板', '# 月度教研工作汇报\r\n\r\n## 一、本月教研活动开展情况\r\n1. 开展了XX次教研活动，主题包括...\r\n2. 组织了XX次集体备课，涉及年级和内容...\r\n3. 参加了XX培训/研讨会，主要内容...\r\n\r\n## 二、教研成果与亮点\r\n1. 教学方法创新：...\r\n2. 学生学习效果提升：...\r\n3. 教师专业成长：...\r\n\r\n## 三、存在问题与改进措施\r\n1. 问题一：...\r\n   改进措施：...\r\n2. 问题二：...\r\n   改进措施：...\r\n\r\n## 四、下月工作计划\r\n1. 计划开展的教研活动：...\r\n2. 重点关注的教学问题：...\r\n3. 教师培训计划：...\r\n\r\n## 五、其他说明\r\n...', '月度汇报', '通用', 1, 1),
 ('教师培训反馈模板', '# 教师培训反馈报告\r\n\r\n## 一、培训基本情况\r\n- 培训名称：...\r\n- 培训时间：...\r\n- 培训地点：...\r\n- 培训对象：...\r\n- 培训主讲人：...\r\n\r\n## 二、培训内容摘要\r\n1. 主题一：...\r\n2. 主题二：...\r\n3. 主题三：...\r\n\r\n## 三、培训收获与反思\r\n1. 主要收获：...\r\n2. 对教学工作的启示：...\r\n3. 个人反思：...\r\n\r\n## 四、实践应用计划\r\n1. 短期应用计划：...\r\n2. 长期应用计划：...\r\n3. 预期效果：...\r\n\r\n## 五、建议与反馈\r\n...', '培训反馈', '通用', 1, 1);
+
+-- 创建AI API设置表
+CREATE TABLE IF NOT EXISTS `ai_api_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `provider` varchar(50) NOT NULL,
+  `api_type` varchar(20) NOT NULL,
+  `api_key` varchar(255) NOT NULL,
+  `api_url` varchar(255) NOT NULL,
+  `model_name` varchar(100) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 0,
+  `max_tokens` int(11) DEFAULT NULL,
+  `temperature` float DEFAULT NULL,
+  `additional_params` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `provider_api_type` (`provider`, `api_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
