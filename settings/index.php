@@ -86,6 +86,7 @@ $pageTitle = '系统设置';
                                     <button type="button" class="tab-btn active" data-tab="general">基本设置</button>
                                     <button type="button" class="tab-btn" data-tab="reports">汇报设置</button>
                                     <button type="button" class="tab-btn" data-tab="notifications">通知设置</button>
+                                    <button type="button" class="tab-btn" data-tab="ai">AI模型设置</button>
                                     <button type="button" class="tab-btn" data-tab="advanced">高级设置</button>
                                 </div>
                                 
@@ -157,6 +158,30 @@ $pageTitle = '系统设置';
                                         </div>
                                     </div>
                                     
+                                    <!-- AI模型设置 -->
+                                    <div class="tab-pane" id="ai">
+                                        <div class="ai-settings-intro">
+                                            <h3>AI模型配置</h3>
+                                            <p>在这里配置AI模型API，启用智能辅助功能。</p>
+                                            
+                                            <div class="ai-settings-actions">
+                                                <a href="<?php echo BASE_URL; ?>/settings/ai_settings.php" class="btn-primary">配置AI模型</a>
+                                            </div>
+                                            
+                                            <div class="ai-settings-info">
+                                                <h4>AI功能概述</h4>
+                                                <ul>
+                                                    <li>自动生成汇报内容</li>
+                                                    <li>优化和改进现有内容</li>
+                                                    <li>生成提示词模板</li>
+                                                    <li>生成相关图像</li>
+                                                </ul>
+                                                
+                                                <p>配置AI模型API后，系统将在汇报编辑页面提供AI辅助功能，帮助用户更高效地创建高质量汇报。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <!-- 高级设置 -->
                                     <div class="tab-pane" id="advanced">
                                         <div class="form-group">
@@ -216,5 +241,38 @@ $pageTitle = '系统设置';
             });
         });
     </script>
+    
+    <style>
+    .ai-settings-intro {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .ai-settings-actions {
+        margin: 20px 0;
+    }
+    
+    .ai-settings-info {
+        background-color: #fff;
+        border-left: 4px solid #4a6cf7;
+        padding: 15px;
+        margin-top: 20px;
+    }
+    
+    .ai-settings-info h4 {
+        margin-top: 0;
+        color: #333;
+    }
+    
+    .ai-settings-info ul {
+        padding-left: 20px;
+    }
+    
+    .ai-settings-info li {
+        margin-bottom: 8px;
+    }
+    </style>
 </body>
 </html>
